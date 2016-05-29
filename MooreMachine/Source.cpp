@@ -8,32 +8,35 @@ typedef struct State State;
 typedef struct Path Path;
 
 struct State {
-	char in[20];
-	char out[20];
+	char *in;
+	char *out;
 	State *next;
 	Path *start;
 };
 
-struct Path{
-	char value[20];
+struct Path {
+	char *value;
 	State *current;
 	State *next_state;
 	Path *next;
 };
 
-State *head=NULL;
+State *head;
 
-State *new_state(char in[20], char out[20]) {
+State *new_state(char *in, char *out) {
 	State *node = (State *)malloc(sizeof(State));
-	strcpy_s(node->in, in);
-	strcpy_s(node->out, out);
+	node->in = (char*)malloc(sizeof(in));
+	strcpy(node->in, in);
+	node->out = (char*)malloc(sizeof(out));
+	strcpy(node->out, out);
 	node->next = NULL;
 	node->start = NULL;
 	return node;
 }
-Path *new_path(char val[20], State *current, State *next) {
+Path *new_path(char *val, State *current, State *next) {
 	Path *node = (Path *)malloc(sizeof(Path));
-	strcpy_s(node->value, val);
+	node->value = (char*)malloc(sizeof(val));
+	strcpy(node->value, val);
 	node->next = NULL;
 	node->next_state = next;
 	node->current = current;
@@ -54,7 +57,7 @@ State *add_state(State *node) {
 	return node;
 }
 
-State *add_state(char in[20], char out[20], bool finish){
+State *add_state(char in[20], char out[20], bool finish) {
 	State *node = new_state(in, out);
 	return add_state(node);
 }
@@ -74,12 +77,14 @@ Path *add_path(Path *node) {
 	return node;
 }
 
-Path *add_path(char val[20], State *current, State *next){
-	Path *node = new_path(val,current,next);
+Path *add_path(char *val, State *current, State *next) {
+	Path *node = new_path(val, current, next);
 	return add_path(node);
 }
 
+
 void initialize() {
+	head = NULL;
 	State states[4];
 	states[0] = *new_state("q0", "0");
 	states[1] = *new_state("q1", "0");
@@ -106,16 +111,27 @@ void initialize() {
 	}
 }
 
-char *run_machine(char inputs[][20], int pattern_size) {
-	/*State *iterator = head;
-	char *output = "";
-	for (int i = 0; i < pattern_size; i++)
-	{
-		char * str3 = (char *)malloc(1 + strlen(output) + strlen(iterator->out));
-		strcpy(str3, output);
-		strcat(str3, iterator->out);
-		strcpy(output, str3);
 
+void main() {
+
+	initialize();
+	char *inputs[7];
+	inputs[0] = "b";
+	inputs[1] = "a";
+	inputs[2] = "b";
+	inputs[3] = "a";
+	inputs[4] = "b";
+	inputs[5] = "b";
+	inputs[6] = "b";
+	
+
+	char *outputs[LEN(inputs) + 1];
+	bool error = false;
+
+	State *iterator = head;
+	for (int i = 0; i < LEN(inputs); i++)
+	{
+		outputs[i] = iterator->out;
 		Path *start_path = iterator->start;
 		while (start_path != NULL)
 		{
@@ -125,30 +141,28 @@ char *run_machine(char inputs[][20], int pattern_size) {
 			}
 			start_path = start_path->next;
 		}
-		if (start_path == NULL)
-			output = "This machine not works";
+		if (start_path == NULL) {
+			outputs[i] = "This machine not works";
+			error = true;
+			break;
+		}
 		else
 			iterator = start_path->next_state;
-	}*/
-	return "";
-}
+	}
+	if(error == false)
+		outputs[LEN(inputs)] = iterator->out;
 
-
-void main() {
-	
-	initialize();
-	char inputs[7][20];
-	strcpy(inputs[0], "b");
-	strcpy(inputs[1], "a");
-	strcpy(inputs[2], "b");
-	strcpy(inputs[3], "a");
-	strcpy(inputs[4], "b");
-	strcpy(inputs[5], "b");
-	strcpy(inputs[6], "b");
-	run_machine(inputs, 7);
-
-
-
+	printf("\t");
+	for (int i = 0; i <LEN(inputs); i++)
+	{
+		printf("%s\t", inputs[i]);
+	}
+	printf("\n");
+	for (int i = 0; i <LEN(outputs); i++)
+	{
+		printf("%s\t", outputs[i]);
+	}
+	getchar();
 
 	return void(0);
 }
