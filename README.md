@@ -1,0 +1,3 @@
+# MooreMachine
+
+simple example 
