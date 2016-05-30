@@ -152,12 +152,12 @@ void main() {
 	if(error == false)
 		outputs[LEN(inputs)] = iterator->out;
 
-	printf("\t");
+	printf("input:\t\t");
 	for (int i = 0; i <LEN(inputs); i++)
 	{
 		printf("%s\t", inputs[i]);
 	}
-	printf("\n");
+	printf("\noutput: ");
 	for (int i = 0; i <LEN(outputs); i++)
 	{
 		printf("%s\t", outputs[i]);
